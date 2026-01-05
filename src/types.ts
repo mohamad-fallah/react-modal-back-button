@@ -15,7 +15,7 @@ export type UseModalToggleReturn = {
 export type HistoryStateShape = {
   __rmbb?: {
     v: 1;
-    key: string;
+    keys: string[];
     ts: number;
   };
 };

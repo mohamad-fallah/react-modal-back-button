@@ -49,9 +49,9 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
       if (!isOpen || !hasHistoryEntry.current) return;
 
       const currentState = (history.state ?? {}) as HistoryStateShape;
-      const currentModalKey = currentState.__rmbb?.key;
+      const currentKeys = currentState.__rmbb?.keys ?? [];
 
-      if (currentModalKey !== modalId) {
+      if (!currentKeys.includes(modalId)) {
         closedByBackButton.current = true;
         setIsOpen(false);
       }
@@ -71,9 +71,10 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
       }
 
       const currentState = (history.state ?? {}) as HistoryStateShape;
+      const currentKeys = currentState.__rmbb?.keys ?? [];
       const nextState: HistoryStateShape = {
         ...currentState,
-        __rmbb: { v: 1, key: modalId, ts: Date.now() }
+        __rmbb: { v: 1, keys: [...currentKeys, modalId], ts: Date.now() }
       };
 
       history.pushState(nextState, document.title);

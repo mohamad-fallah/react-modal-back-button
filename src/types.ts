@@ -5,6 +5,13 @@ export type UseModalBackButtonOptions = {
   cleanupOnClose?: boolean;
 };
 
+export type UseModalBackButtonReturn = {
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+};
+
 export type HistoryStateShape = {
   __rmbb?: {
     v: 1;

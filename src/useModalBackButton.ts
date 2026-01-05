@@ -1,17 +1,15 @@
-import { useEffect, useMemo, useRef } from "react";
-import type { UseModalBackButtonOptions, HistoryStateShape } from "./types";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { UseModalBackButtonOptions, UseModalBackButtonReturn, HistoryStateShape } from "./types";
 
-export function useModalBackButton(
-  isOpen: boolean,
-  onClose: () => void,
-  options: UseModalBackButtonOptions = {}
-) {
+export function useModalBackButton(options: UseModalBackButtonOptions = {}): UseModalBackButtonReturn {
   const {
     key,
     enabled = true,
     pushStateOnOpen = true,
     cleanupOnClose = true
   } = options;
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const modalId = useMemo(
     () => key ?? `rmbb_${Math.random().toString(36).slice(2)}`,
@@ -26,16 +24,18 @@ export function useModalBackButton(
   const hasHistoryEntry = useRef(false);
   const shouldIgnorePopState = useRef(false);
   const closedByBackButton = useRef(false);
-  const currentIsOpen = useRef(isOpen);
-  const currentOnClose = useRef(onClose);
 
-  useEffect(() => {
-    currentIsOpen.current = isOpen;
-  }, [isOpen]);
+  const open = useCallback(() => {
+    setIsOpen(true);
+  }, []);
 
-  useEffect(() => {
-    currentOnClose.current = onClose;
-  }, [onClose]);
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const toggle = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     if (!canUseBrowser || !enabled) return;
@@ -46,15 +46,15 @@ export function useModalBackButton(
         return;
       }
 
-      if (currentIsOpen.current) {
+      if (isOpen) {
         closedByBackButton.current = true;
-        currentOnClose.current();
+        setIsOpen(false);
       }
     };
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [canUseBrowser, enabled]);
+  }, [canUseBrowser, enabled, isOpen]);
 
   useEffect(() => {
     if (!canUseBrowser || !enabled) return;
@@ -92,4 +92,6 @@ export function useModalBackButton(
     hasHistoryEntry.current = false;
     closedByBackButton.current = false;
   }, [canUseBrowser, enabled, isOpen, pushStateOnOpen, cleanupOnClose, modalId]);
+
+  return { isOpen, open, close, toggle };
 }

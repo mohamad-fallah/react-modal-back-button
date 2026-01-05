@@ -8,7 +8,7 @@ A lightweight React hook that enables native back button support for modals and 
 
 ## Features
 
-- 🎯 **Simple API** - Just pass `isOpen` and `onClose` to get started
+- 🎯 **Simple API** - Built-in state management, no need for extra useState
 - 📱 **Mobile-First** - Perfect UX for mobile users
 - ⚡ **Lightweight** - Zero dependencies, minimal footprint
 - 🔧 **Flexible** - Works with any modal library or custom implementation
@@ -42,24 +42,21 @@ This hook intercepts back button presses and closes your modal instead, creating
 ### Basic Example
 
 ```jsx
-import { useState } from 'react';
 import { useModalBackButton } from 'react-modal-back-button';
 
 function MyComponent() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useModalBackButton(isModalOpen, () => setIsModalOpen(false));
+  const { isOpen, open, close } = useModalBackButton();
 
   return (
     <div>
-      <button onClick={() => setIsModalOpen(true)}>
+      <button onClick={open}>
         Open Modal
       </button>
 
-      {isModalOpen && (
+      {isOpen && (
         <div className="modal">
           <h2>My Modal</h2>
-          <button onClick={() => setIsModalOpen(false)}>
+          <button onClick={close}>
             Close
           </button>
         </div>
@@ -74,22 +71,19 @@ function MyComponent() {
 #### React Modal
 
 ```jsx
-import { useState } from 'react';
 import Modal from 'react-modal';
 import { useModalBackButton } from 'react-modal-back-button';
 
 function MyComponent() {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  useModalBackButton(isOpen, () => setIsOpen(false));
+  const { isOpen, open, close } = useModalBackButton();
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+      <button onClick={open}>Open Modal</button>
       
-      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)}>
+      <Modal isOpen={isOpen} onRequestClose={close}>
         <h2>Hello Modal</h2>
-        <button onClick={() => setIsOpen(false)}>Close</button>
+        <button onClick={close}>Close</button>
       </Modal>
     </>
   );
@@ -99,20 +93,17 @@ function MyComponent() {
 #### Material-UI (MUI)
 
 ```jsx
-import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, Button } from '@mui/material';
 import { useModalBackButton } from 'react-modal-back-button';
 
 function MyComponent() {
-  const [open, setOpen] = useState(false);
-  
-  useModalBackButton(open, () => setOpen(false));
+  const { isOpen, open, close } = useModalBackButton();
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Open Dialog</Button>
+      <Button onClick={open}>Open Dialog</Button>
       
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog open={isOpen} onClose={close}>
         <DialogTitle>Hello Dialog</DialogTitle>
         <DialogContent>
           Content here
@@ -126,20 +117,17 @@ function MyComponent() {
 #### Headless UI
 
 ```jsx
-import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { useModalBackButton } from 'react-modal-back-button';
 
 function MyComponent() {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  useModalBackButton(isOpen, () => setIsOpen(false));
+  const { isOpen, open, close } = useModalBackButton();
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>Open</button>
+      <button onClick={open}>Open</button>
       
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+      <Dialog open={isOpen} onClose={close}>
         <Dialog.Panel>
           <Dialog.Title>Title</Dialog.Title>
         </Dialog.Panel>
@@ -152,7 +140,7 @@ function MyComponent() {
 ## Options
 
 ```typescript
-useModalBackButton(isOpen, onClose, {
+const { isOpen, open, close, toggle } = useModalBackButton({
   key: 'my-modal',
   enabled: true,
   pushStateOnOpen: true,
@@ -183,15 +171,22 @@ This ensures the back button works exactly as users expect, without breaking bro
 
 ## API Reference
 
-### `useModalBackButton(isOpen, onClose, options?)`
+### `useModalBackButton(options?)`
 
 #### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `isOpen` | `boolean` | Yes | Whether the modal is currently open |
-| `onClose` | `() => void` | Yes | Callback function to close the modal |
 | `options` | `UseModalBackButtonOptions` | No | Configuration options |
+
+#### Returns
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `isOpen` | `boolean` | Current state of the modal |
+| `open` | `() => void` | Function to open the modal |
+| `close` | `() => void` | Function to close the modal |
+| `toggle` | `() => void` | Function to toggle modal state |
 
 #### Options
 
@@ -207,7 +202,11 @@ This ensures the back button works exactly as users expect, without breaking bro
 Full TypeScript support is included with complete type definitions.
 
 ```typescript
-import { useModalBackButton, UseModalBackButtonOptions } from 'react-modal-back-button';
+import { 
+  useModalBackButton, 
+  UseModalBackButtonOptions,
+  UseModalBackButtonReturn 
+} from 'react-modal-back-button';
 
 const options: UseModalBackButtonOptions = {
   key: 'my-modal',
@@ -216,7 +215,7 @@ const options: UseModalBackButtonOptions = {
   cleanupOnClose: true
 };
 
-useModalBackButton(isOpen, onClose, options);
+const { isOpen, open, close, toggle }: UseModalBackButtonReturn = useModalBackButton(options);
 ```
 
 ## Advanced Usage
@@ -227,18 +226,38 @@ When working with multiple modals, provide unique keys to avoid conflicts:
 
 ```jsx
 function App() {
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const settings = useModalBackButton({ key: 'settings-modal' });
+  const profile = useModalBackButton({ key: 'profile-modal' });
 
-  useModalBackButton(settingsOpen, () => setSettingsOpen(false), {
-    key: 'settings-modal'
-  });
+  return (
+    <>
+      <button onClick={settings.open}>Open Settings</button>
+      <button onClick={profile.open}>Open Profile</button>
+      
+      {settings.isOpen && <SettingsModal onClose={settings.close} />}
+      {profile.isOpen && <ProfileModal onClose={profile.close} />}
+    </>
+  );
+}
+```
 
-  useModalBackButton(profileOpen, () => setProfileOpen(false), {
-    key: 'profile-modal'
-  });
+### Toggle Function
 
-  return (/* ... */);
+Use the built-in toggle function for convenience:
+
+```jsx
+function App() {
+  const { isOpen, toggle } = useModalBackButton();
+
+  return (
+    <>
+      <button onClick={toggle}>
+        {isOpen ? 'Close' : 'Open'} Modal
+      </button>
+      
+      {isOpen && <Modal onClose={toggle} />}
+    </>
+  );
 }
 ```
 
@@ -247,10 +266,9 @@ function App() {
 Disable the hook based on conditions without unmounting:
 
 ```jsx
-const [isOpen, setIsOpen] = useState(false);
 const isMobile = useMediaQuery('(max-width: 768px)');
 
-useModalBackButton(isOpen, () => setIsOpen(false), {
+const { isOpen, open, close } = useModalBackButton({
   enabled: isMobile
 });
 ```
@@ -260,7 +278,7 @@ useModalBackButton(isOpen, () => setIsOpen(false), {
 If you manage history yourself, disable automatic pushing:
 
 ```jsx
-useModalBackButton(isOpen, () => setIsOpen(false), {
+const { isOpen, open, close } = useModalBackButton({
   pushStateOnOpen: false
 });
 ```

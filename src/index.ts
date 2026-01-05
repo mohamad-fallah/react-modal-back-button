@@ -1,2 +1,2 @@
 export { useModalBackButton } from "./useModalBackButton";
-export type { UseModalBackButtonOptions } from "./types";
+export type { UseModalBackButtonOptions, UseModalBackButtonReturn } from "./types";

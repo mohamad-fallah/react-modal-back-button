@@ -46,7 +46,12 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
         return;
       }
 
-      if (isOpen) {
+      if (!isOpen || !hasHistoryEntry.current) return;
+
+      const currentState = (history.state ?? {}) as HistoryStateShape;
+      const currentModalKey = currentState.__rmbb?.key;
+
+      if (currentModalKey !== modalId) {
         closedByBackButton.current = true;
         setIsOpen(false);
       }
@@ -54,7 +59,7 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [canUseBrowser, enabled, isOpen]);
+  }, [canUseBrowser, enabled, isOpen, modalId]);
 
   useEffect(() => {
     if (!canUseBrowser || !enabled) return;

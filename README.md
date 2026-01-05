@@ -1,9 +1,9 @@
-# react-modal-back-button
+# use-modal-toggle
 
 A lightweight React hook that enables native back button support for modals and dialogs. Press the back button to close modals instead of navigating away from the page.
 
-[![npm version](https://img.shields.io/npm/v/react-modal-back-button.svg)](https://www.npmjs.com/package/react-modal-back-button)
-[![Bundle size](https://img.shields.io/bundlephobia/minzip/react-modal-back-button)](https://bundlephobia.com/package/react-modal-back-button)
+[![npm version](https://img.shields.io/npm/v/use-modal-toggle.svg)](https://www.npmjs.com/package/use-modal-toggle)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/use-modal-toggle)](https://bundlephobia.com/package/use-modal-toggle)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -18,15 +18,15 @@ A lightweight React hook that enables native back button support for modals and 
 ## Installation
 
 ```bash
-npm install react-modal-back-button
+npm install use-modal-toggle
 ```
 
 ```bash
-yarn add react-modal-back-button
+yarn add use-modal-toggle
 ```
 
 ```bash
-pnpm add react-modal-back-button
+pnpm add use-modal-toggle
 ```
 
 ## The Problem
@@ -42,7 +42,7 @@ This hook intercepts back button presses and closes your modal instead, creating
 ### Basic Example
 
 ```jsx
-import { useModalBackButton } from 'react-modal-back-button';
+import { useModalBackButton } from 'use-modal-toggle';
 
 function MyComponent() {
   const { isOpen, open, close } = useModalBackButton();
@@ -72,7 +72,7 @@ function MyComponent() {
 
 ```jsx
 import Modal from 'react-modal';
-import { useModalBackButton } from 'react-modal-back-button';
+import { useModalBackButton } from 'use-modal-toggle';
 
 function MyComponent() {
   const { isOpen, open, close } = useModalBackButton();
@@ -94,7 +94,7 @@ function MyComponent() {
 
 ```jsx
 import { Dialog, DialogTitle, DialogContent, Button } from '@mui/material';
-import { useModalBackButton } from 'react-modal-back-button';
+import { useModalBackButton } from 'use-modal-toggle';
 
 function MyComponent() {
   const { isOpen, open, close } = useModalBackButton();
@@ -118,7 +118,7 @@ function MyComponent() {
 
 ```jsx
 import { Dialog } from '@headlessui/react';
-import { useModalBackButton } from 'react-modal-back-button';
+import { useModalBackButton } from 'use-modal-toggle';
 
 function MyComponent() {
   const { isOpen, open, close } = useModalBackButton();
@@ -206,7 +206,7 @@ import {
   useModalBackButton, 
   UseModalBackButtonOptions,
   UseModalBackButtonReturn 
-} from 'react-modal-back-button';
+} from 'use-modal-toggle';
 
 const options: UseModalBackButtonOptions = {
   key: 'my-modal',

@@ -1,5 +1,5 @@
 {
-  "name": "react-modal-back-button",
+  "name": "use-modal-toggle",
   "version": "1.0.10",
   "description": "A lightweight React hook that enables native back button support for modals and dialogs. Press the back button to close modals instead of navigating away.",
   "keywords": [

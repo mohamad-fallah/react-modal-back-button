@@ -42,10 +42,10 @@ This hook intercepts back button presses and closes your modal instead, creating
 ### Basic Example
 
 ```jsx
-import { useModalBackButton } from 'use-modal-toggle';
+import { useModalToggle } from 'use-modal-toggle';
 
 function MyComponent() {
-  const { isOpen, open, close } = useModalBackButton();
+  const { isOpen, open, close } = useModalToggle();
 
   return (
     <div>
@@ -72,10 +72,10 @@ function MyComponent() {
 
 ```jsx
 import Modal from 'react-modal';
-import { useModalBackButton } from 'use-modal-toggle';
+import { useModalToggle } from 'use-modal-toggle';
 
 function MyComponent() {
-  const { isOpen, open, close } = useModalBackButton();
+  const { isOpen, open, close } = useModalToggle();
 
   return (
     <>
@@ -94,10 +94,10 @@ function MyComponent() {
 
 ```jsx
 import { Dialog, DialogTitle, DialogContent, Button } from '@mui/material';
-import { useModalBackButton } from 'use-modal-toggle';
+import { useModalToggle } from 'use-modal-toggle';
 
 function MyComponent() {
-  const { isOpen, open, close } = useModalBackButton();
+  const { isOpen, open, close } = useModalToggle();
 
   return (
     <>
@@ -118,10 +118,10 @@ function MyComponent() {
 
 ```jsx
 import { Dialog } from '@headlessui/react';
-import { useModalBackButton } from 'use-modal-toggle';
+import { useModalToggle } from 'use-modal-toggle';
 
 function MyComponent() {
-  const { isOpen, open, close } = useModalBackButton();
+  const { isOpen, open, close } = useModalToggle();
 
   return (
     <>
@@ -140,7 +140,7 @@ function MyComponent() {
 ## Options
 
 ```typescript
-const { isOpen, open, close, toggle } = useModalBackButton({
+const { isOpen, open, close, toggle } = useModalToggle({
   key: 'my-modal',
   enabled: true,
   pushStateOnOpen: true,
@@ -171,13 +171,13 @@ This ensures the back button works exactly as users expect, without breaking bro
 
 ## API Reference
 
-### `useModalBackButton(options?)`
+### `useModalToggle(options?)`
 
 #### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `options` | `UseModalBackButtonOptions` | No | Configuration options |
+| `options` | `UseModalToggleOptions` | No | Configuration options |
 
 #### Returns
 
@@ -203,19 +203,19 @@ Full TypeScript support is included with complete type definitions.
 
 ```typescript
 import { 
-  useModalBackButton, 
-  UseModalBackButtonOptions,
-  UseModalBackButtonReturn 
+  useModalToggle, 
+  UseModalToggleOptions,
+  UseModalToggleReturn 
 } from 'use-modal-toggle';
 
-const options: UseModalBackButtonOptions = {
+const options: UseModalToggleOptions = {
   key: 'my-modal',
   enabled: true,
   pushStateOnOpen: true,
   cleanupOnClose: true
 };
 
-const { isOpen, open, close, toggle }: UseModalBackButtonReturn = useModalBackButton(options);
+const { isOpen, open, close, toggle }: UseModalToggleReturn = useModalToggle(options);
 ```
 
 ## Advanced Usage
@@ -226,8 +226,8 @@ When working with multiple modals, provide unique keys to avoid conflicts:
 
 ```jsx
 function App() {
-  const settings = useModalBackButton({ key: 'settings-modal' });
-  const profile = useModalBackButton({ key: 'profile-modal' });
+  const settings = useModalToggle({ key: 'settings-modal' });
+  const profile = useModalToggle({ key: 'profile-modal' });
 
   return (
     <>
@@ -247,7 +247,7 @@ Use the built-in toggle function for convenience:
 
 ```jsx
 function App() {
-  const { isOpen, toggle } = useModalBackButton();
+  const { isOpen, toggle } = useModalToggle();
 
   return (
     <>
@@ -268,7 +268,7 @@ Disable the hook based on conditions without unmounting:
 ```jsx
 const isMobile = useMediaQuery('(max-width: 768px)');
 
-const { isOpen, open, close } = useModalBackButton({
+const { isOpen, open, close } = useModalToggle({
   enabled: isMobile
 });
 ```
@@ -278,7 +278,7 @@ const { isOpen, open, close } = useModalBackButton({
 If you manage history yourself, disable automatic pushing:
 
 ```jsx
-const { isOpen, open, close } = useModalBackButton({
+const { isOpen, open, close } = useModalToggle({
   pushStateOnOpen: false
 });
 ```

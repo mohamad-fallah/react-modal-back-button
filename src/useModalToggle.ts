@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { UseModalBackButtonOptions, UseModalBackButtonReturn, HistoryStateShape } from "./types";
+import type { UseModalToggleOptions, UseModalToggleReturn, HistoryStateShape } from "./types";
 
-export function useModalBackButton(options: UseModalBackButtonOptions = {}): UseModalBackButtonReturn {
+export function useModalToggle(options: UseModalToggleOptions = {}): UseModalToggleReturn {
   const {
     key,
     enabled = true,
@@ -95,3 +95,4 @@ export function useModalBackButton(options: UseModalBackButtonOptions = {}): Use
 
   return { isOpen, open, close, toggle };
 }
+

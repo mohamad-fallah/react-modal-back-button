@@ -1,11 +1,11 @@
-export type UseModalBackButtonOptions = {
+export type UseModalToggleOptions = {
   key?: string;
   enabled?: boolean;
   pushStateOnOpen?: boolean;
   cleanupOnClose?: boolean;
 };
 
-export type UseModalBackButtonReturn = {
+export type UseModalToggleReturn = {
   isOpen: boolean;
   open: () => void;
   close: () => void;

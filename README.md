@@ -144,7 +144,8 @@ const { isOpen, open, close, toggle } = useModalToggle({
   key: 'my-modal',
   enabled: true,
   pushStateOnOpen: true,
-  cleanupOnClose: true
+  cleanupOnClose: true,
+  autoCloseOthersOnOpen: false
 });
 ```
 
@@ -196,6 +197,7 @@ This ensures the back button works exactly as users expect, without breaking bro
 | `enabled` | `boolean` | `true` | Enable or disable the hook without unmounting |
 | `pushStateOnOpen` | `boolean` | `true` | Whether to push a history entry when modal opens |
 | `cleanupOnClose` | `boolean` | `true` | Whether to remove history entry when modal closes programmatically |
+| `autoCloseOthersOnOpen` | `boolean` | `false` | When `true`, opening this modal will automatically close other modals that also have this flag enabled |
 
 ## TypeScript
 
@@ -226,8 +228,8 @@ When working with multiple modals, provide unique keys to avoid conflicts:
 
 ```jsx
 function App() {
-  const settings = useModalToggle({ key: 'settings-modal' });
-  const profile = useModalToggle({ key: 'profile-modal' });
+  const settings = useModalToggle({ key: 'settings-modal', autoCloseOthersOnOpen: true });
+  const profile = useModalToggle({ key: 'profile-modal', autoCloseOthersOnOpen: true });
 
   return (
     <>

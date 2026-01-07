@@ -25,6 +25,7 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
   const hasHistoryEntry = useRef(false);
   const shouldIgnorePopState = useRef(false);
   const closedByBackButton = useRef(false);
+  const closedByOtherModal = useRef(false);
 
   const open = useCallback(() => {
     setIsOpen(true);
@@ -77,6 +78,7 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
       if (!custom.detail) return;
 
       if (custom.detail.modalId !== modalId) {
+        closedByOtherModal.current = true;
         setIsOpen(false);
       }
     };
@@ -96,9 +98,14 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
 
       const currentState = (history.state ?? {}) as HistoryStateShape;
       const currentKeys = currentState.__rmbb?.keys ?? [];
+
+      const keysToKeep = autoCloseOthersOnOpen 
+        ? [modalId] 
+        : [...currentKeys, modalId];
+      
       const nextState: HistoryStateShape = {
         ...currentState,
-        __rmbb: { v: 1, keys: [...currentKeys, modalId], ts: Date.now() }
+        __rmbb: { v: 1, keys: keysToKeep, ts: Date.now() }
       };
 
       history.pushState(nextState, document.title);
@@ -114,6 +121,11 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
         return;
       }
 
+      if (closedByOtherModal.current) {
+        closedByOtherModal.current = false;
+        return;
+      }
+
       shouldIgnorePopState.current = true;
       history.back();
       return;
@@ -121,7 +133,8 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
 
     hasHistoryEntry.current = false;
     closedByBackButton.current = false;
-  }, [canUseBrowser, enabled, isOpen, pushStateOnOpen, cleanupOnClose, modalId]);
+    closedByOtherModal.current = false;
+  }, [canUseBrowser, enabled, isOpen, pushStateOnOpen, cleanupOnClose, modalId, autoCloseOthersOnOpen]);
 
   return { isOpen, open, close, toggle };
 }

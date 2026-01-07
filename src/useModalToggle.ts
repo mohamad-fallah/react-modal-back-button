@@ -6,7 +6,8 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
     key,
     enabled = true,
     pushStateOnOpen = true,
-    cleanupOnClose = true
+    cleanupOnClose = true,
+    autoCloseOthersOnOpen = false
   } = options;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +28,14 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
 
   const open = useCallback(() => {
     setIsOpen(true);
-  }, []);
+
+    if (autoCloseOthersOnOpen && canUseBrowser && enabled) {
+      const event = new CustomEvent("rmbb:modal-open", {
+        detail: { modalId }
+      });
+      window.dispatchEvent(event);
+    }
+  }, [autoCloseOthersOnOpen, canUseBrowser, enabled, modalId]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -60,6 +68,22 @@ export function useModalToggle(options: UseModalToggleOptions = {}): UseModalTog
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, [canUseBrowser, enabled, isOpen, modalId]);
+
+  useEffect(() => {
+    if (!canUseBrowser || !enabled || !autoCloseOthersOnOpen) return;
+
+    const handleExternalOpen = (event: Event) => {
+      const custom = event as CustomEvent<{ modalId: string }>;
+      if (!custom.detail) return;
+
+      if (custom.detail.modalId !== modalId) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("rmbb:modal-open", handleExternalOpen);
+    return () => window.removeEventListener("rmbb:modal-open", handleExternalOpen);
+  }, [autoCloseOthersOnOpen, canUseBrowser, enabled, modalId]);
 
   useEffect(() => {
     if (!canUseBrowser || !enabled) return;
